@@ -32,6 +32,20 @@ router.post("/", validateCar, (req, res) => {
     });
 });
 
+router.delete("/:id", validateCarId, (req, res) => {
+  db("cars")
+    .where({ id: req.params.id })
+    .del()
+    .then(count => {
+      res
+        .status(200)
+        .json({ message: `deleted ${count} records, ID: ${req.params.id}` });
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+});
+
 // custom middleware
 
 function validateCar(req, res, next) {
@@ -46,5 +60,20 @@ function validateCar(req, res, next) {
   }
 
   next();
+}
+
+function validateCarId(req, res, next) {
+  db("cars")
+    .where("id", req.params.id)
+    .then(([car]) => {
+      if (car) {
+        next();
+      } else {
+        res.status(400).json({ message: " Invalid car id." });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ error: "The car could not be retrieved." });
+    });
 }
 module.exports = router;
