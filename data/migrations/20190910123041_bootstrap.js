@@ -12,9 +12,9 @@ exports.up = function(knex) {
 
     tbl.integer("mileage").notNullable();
 
-    tbl.string("transmission type");
+    tbl.string("transmission");
 
-    tbl.string("title status");
+    tbl.string("title");
   });
 };
 
