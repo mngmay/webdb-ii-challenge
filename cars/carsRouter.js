@@ -46,6 +46,24 @@ router.delete("/:id", validateCarId, (req, res) => {
     });
 });
 
+router.put("/:id", validateCarId, (req, res) => {
+  const changes = req.body;
+
+  if (Object.keys(changes) < 1) {
+    return res.status(400).json({ error: "Missing property data." });
+  }
+
+  db("cars")
+    .where("id", req.params.id)
+    .update(changes)
+    .then(count => {
+      res
+        .status(200)
+        .json({ message: `Updated ${count} records, ID: ${req.params.id}` });
+    })
+    .catch(err => res.status(500).json(err));
+});
+
 // custom middleware
 
 function validateCar(req, res, next) {
